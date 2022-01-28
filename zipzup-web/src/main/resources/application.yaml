@@ -1,0 +1,15 @@
+---
+server:
+  port: 8080
+  env: "local"
+  netty:
+    connection-timeout: 120s
+
+management:
+  endpoints:
+    web:
+      base-path: /
+
+spring:
+  application:
+    name: zipzup
