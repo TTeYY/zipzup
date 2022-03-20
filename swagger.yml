@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: Zipzup APIs
+  description: |
+    Description
+  version: v1
+
+servers:
+  - url: http://zipzup.xyz
+
+tags:
+  - name: Prices
+    description: APIs related to price
+  - name: Query
+    description: APIs related to query
+
+paths:
+
+
+
+
+
+
+
+
+
+
+
+
+
