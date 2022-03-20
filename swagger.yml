@@ -15,11 +15,185 @@ tags:
     description: APIs related to query
 
 paths:
+  /notification/profile:
+    get:
+      summary: Query region list
+      operationId: getRegions
+      tags:
+        - Query
+      parameters:
+        - $ref: '#/components/parameters/optionalDistrict1'
+        - $ref: '#/components/parameters/optionalDistrict2'
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationProfile'
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
 
 
+components:
+  parameters:
+    optionalDistrict1:
+      in: query
+      name: district1
+      required: false
+      schema:
+        type: string
+        description: District 1 value
+    optionalDistrict2:
+      in: query
+      name: district2
+      required: false
+      schema:
+        type: string
+        description: District 2 value
 
+  responses:
+    BadRequest:
+      description: Bad request error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: BadRequestError
+                  message: The request is malformed.
+              summary: A bad request response
+    Unauthorized:
+      description: Unauthorized error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: UnauthorizedError
+                  message: Unauthorized request.
+              summary: An unauthorized response
+    Forbidden:
+      description: Forbidden error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: ForbiddenError
+                  message: Access is forbidden.
+              summary: A forbidden error response
+    NotFound:
+      description: Not found error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: NotFoundError
+                  message: A resource could not be found.
+              summary: A not found error response
+    Conflict:
+      description: Conflict error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: ConflictError
+                  message: A conflict occured that prevented action.
+              summary: A conflict error response
+    UnprocessableEntity:
+      description: Unprocessable entity response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: UnprocessableEntityError
+                  message: The request body is malformed.
+              summary: A unprocessable entity error response
+    TooManyRequests:
+      description: Too many requests response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            objectExample:
+              value:
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
+                error:
+                  code: TooManyRequestError
+                  message: Rate limit exceded.
+              summary: A too many requests error response
+    DefaultResponse:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
 
-
+  schemas:
+    Error:
+      description: Details about the error.
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine readable error code.
+          example: ConstraintViolationError
+        message:
+          type: string
+          description: Human readable error message.
+          example: The request was malformed.
+    ErrorResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: A correlation id used for reference when contacting support.
+          example: 957b08cc-3e08-434a-936b-8bad3ad56895
+        error:
+          $ref: '#/components/schemas/Error'
 
 
 
