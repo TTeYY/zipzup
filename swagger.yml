@@ -43,7 +43,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         default:
           $ref: "#/components/responses/DefaultResponse"
-  /notification/profile:
+  /query/regions:
     get:
       summary: Query region list
       operationId: getRegions
@@ -54,28 +54,96 @@ paths:
         - $ref: '#/components/parameters/optionalDistrict2'
       responses:
         '200':
-          description: Successfully updated
+          description: Query result
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationProfile'
-        '201':
-          description: Successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotificationProfile'
+                $ref: '#/components/schemas/QueryRegionsResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
         default:
           $ref: '#/components/responses/DefaultResponse'
-
+  /query/regions/buildings:
+    get:
+      summary: Query building list in the region
+      operationId: getBuildingsInRegion
+      tags:
+        - Query
+      parameters:
+        - $ref: '#/components/parameters/requiredDistrict1'
+        - $ref: '#/components/parameters/requiredDistrict2'
+        - $ref: '#/components/parameters/optionalDistrict3'
+        - $ref: '#/components/parameters/optionalDistrict4'
+      responses:
+        '200':
+          description: Building list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryBuildingsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /query/buildings:
+    get:
+      summary: Query building list by building name
+      operationId: getBuildingsByName
+      tags:
+        - Query
+      parameters:
+        - $ref: '#/components/parameters/requiredBuildingName'
+        - $ref: '#/components/parameters/optionalBuildingType'
+      responses:
+        '200':
+          description: Building list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryBuildingsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /query/buildings/{buildingId}/areas:
+    get:
+      summary: Query building list by building name
+      operationId: getAreasByBuilding
+      tags:
+        - Query
+      parameters:
+        - $ref: '#/components/parameters/requiredBuildingId'
+      responses:
+        '200':
+          description: Area list
+          content:
+            application/json:
+              schema:
+                type: array
+                example: [ 59.9, 68.8 ]
+                items:
+                  type: number
+                  format: float
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
 
 components:
   parameters:
@@ -93,6 +161,54 @@ components:
       schema:
         type: string
         description: District 2 value
+    requiredDistrict1:
+      in: query
+      name: district1
+      required: true
+      schema:
+        type: string
+        description: District 1 value
+    requiredDistrict2:
+      in: query
+      name: district2
+      required: true
+      schema:
+        type: string
+        description: District 2 value
+    optionalDistrict3:
+      in: query
+      name: district3
+      required: false
+      schema:
+        type: string
+        description: District 3 value
+    optionalDistrict4:
+      in: query
+      name: district4
+      required: false
+      schema:
+        type: string
+        description: District 4 value
+    requiredBuildingName:
+      in: query
+      name: name
+      required: true
+      schema:
+        type: string
+        description: Name of building
+    optionalBuildingType:
+      in: query
+      name: type
+      required: false
+      schema:
+        $ref: '#/components/schemas/BuildingType'
+    requiredBuildingId:
+      in: path
+      name: buildingId
+      required: true
+      schema:
+        type: string
+        description: ID of building
 
   responses:
     BadRequest:
@@ -290,3 +406,63 @@ components:
           type: string
         value:
           type: integer
+    QueryRegion:
+      type: object
+      required:
+        - district
+      properties:
+        district:
+          type: string
+          description: District name
+          example: 서울특별시
+        child:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryRegion'
+    QueryRegionsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/QueryRegion'
+    BuildingType:
+      type: string
+      description: Building type
+      example: APT
+      enum:
+        - APT
+    QueryBuilding:
+      type: object
+      required:
+        - id
+        - addressRoad
+        - addressBunji
+        - name
+        - built
+        - buildingType
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Building ID
+          example: 100
+        buildingType:
+          $ref: '#/components/schemas/BuildingType'
+        addressRoad:
+          type: string
+          description: Road address
+          example: 경기도 수원시 영통구 도청로 65
+        addressBunji:
+          type: string
+          description: Bunji address
+          example: 경기도 수원시 영통구 이의동 1344
+        name:
+          type: string
+          description: Building name
+          example: 자연앤힐스테이트아파트
+        built:
+          type: integer
+          description: Built year
+          example: 2015
+    QueryBuildingsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/QueryBuilding'
