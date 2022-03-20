@@ -225,6 +225,7 @@ components:
     RegionFilter:
       type: object
       required:
+        - function
         - district1
         - district2
       properties:
