@@ -15,6 +15,38 @@ tags:
     description: APIs related to query
 
 paths:
+  /notification/profile:
+    get:
+      summary: Query region list
+      operationId: getRegions
+      tags:
+        - Query
+      parameters:
+        - $ref: '#/components/parameters/optionalDistrict1'
+        - $ref: '#/components/parameters/optionalDistrict2'
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationProfile'
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
 
 
 components:
@@ -44,7 +76,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: BadRequestError
                   message: The request is malformed.
@@ -58,7 +90,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: UnauthorizedError
                   message: Unauthorized request.
@@ -72,7 +104,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: ForbiddenError
                   message: Access is forbidden.
@@ -86,7 +118,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: NotFoundError
                   message: A resource could not be found.
@@ -100,7 +132,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: ConflictError
                   message: A conflict occured that prevented action.
@@ -114,7 +146,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: UnprocessableEntityError
                   message: The request body is malformed.
@@ -128,7 +160,7 @@ components:
           examples:
             objectExample:
               value:
-                requestId: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
                 error:
                   code: TooManyRequestError
                   message: Rate limit exceded.
@@ -140,7 +172,7 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
 
-  components:
+  schemas:
     Error:
       description: Details about the error.
       type: object
@@ -159,7 +191,7 @@ components:
         requestId:
           type: string
           description: A correlation id used for reference when contacting support.
-          example: 7b8514e6-230d-41cc-b3c2-512bca15abf0
+          example: 957b08cc-3e08-434a-936b-8bad3ad56895
         error:
           $ref: '#/components/schemas/Error'
 
