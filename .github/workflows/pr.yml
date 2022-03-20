@@ -21,7 +21,7 @@ jobs:
           java-version: 11
       - name: build test
         run: |
-          ./gradlew clean check
+          ./gradlew clean check --parallel
       - name: archive test results
         uses: actions/upload-artifact@v2
         with:
