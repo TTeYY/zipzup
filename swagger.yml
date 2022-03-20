@@ -15,6 +15,34 @@ tags:
     description: APIs related to query
 
 paths:
+  /prices/regions:
+    put:
+      tags:
+        - Prices
+      summary: Get a representative price of region
+      operationId: getRegionPrice
+      requestBody:
+        description: Get filter to specify buildings to check representative price
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegionFilter"
+      responses:
+        "200":
+          description: A representative price of specified buildings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SortedRepresentativePrices"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
   /notification/profile:
     get:
       summary: Query region list
@@ -194,11 +222,70 @@ components:
           example: 957b08cc-3e08-434a-936b-8bad3ad56895
         error:
           $ref: '#/components/schemas/Error'
-
-
-
-
-
-
-
-
+    RegionFilter:
+      type: object
+      required:
+        - district1
+        - district2
+      properties:
+        function:
+          $ref: "#/components/schemas/RepresentativeType"
+        start:
+          type: integer
+          description: Starting date to check the price
+        end:
+          type: integer
+          description: End date to check the price
+        district1:
+          type: string
+          description: First district category
+        district2:
+          type: string
+          description: Second district category
+        district3:
+          type: string
+          description: Third district category
+        district4:
+          type: string
+          description: Fourth district category
+        builtWithIn:
+          type: integer
+          description: Maximum year of the building
+      example:
+        function: AVERAGE
+        start: 2015
+        end: 2019
+        district1: 경기도
+        district2: 수원시
+        district3: 권선구
+        district4: 권선동
+        builtWithIn: 30
+    RepresentativeType:
+      type: string
+      description: Function for representative value
+      enum:
+        - AVERAGE
+        - MEDIAN
+        - MAX
+        - MIN
+        - MODE
+    SortedRepresentativePrices:
+      type: object
+      description: A time-sorted array of contradictions
+      required:
+        - prices
+      properties:
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/RepresentativePrice'
+    RepresentativePrice:
+      type: object
+      description: Representative value of contradictions
+      required:
+        - date
+      properties:
+        date:
+          type: string
+        value:
+          type: integer
