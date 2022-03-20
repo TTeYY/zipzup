@@ -253,8 +253,8 @@ components:
           description: Maximum year of the building
       example:
         function: AVERAGE
-        start: 2015
-        end: 2019
+        start: 201501
+        end: 201912
         district1: 경기도
         district2: 수원시
         district3: 권선구
