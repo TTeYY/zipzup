@@ -43,6 +43,36 @@ paths:
           $ref: "#/components/responses/Forbidden"
         default:
           $ref: "#/components/responses/DefaultResponse"
+  /prices/buildings:
+    put:
+      tags:
+        - Prices
+      summary: Get a representative price of buildings
+      operationId: getBuildingsPrice
+      requestBody:
+        description: Get filter to specify buildings to check representative price
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuildingsFilter"
+      responses:
+        "200":
+          description: A representative price of specified buildings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SortedRepresentativePrices"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
   /query/regions:
     get:
       summary: Query region list
@@ -267,20 +297,6 @@ components:
                   code: NotFoundError
                   message: A resource could not be found.
               summary: A not found error response
-    Conflict:
-      description: Conflict error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            objectExample:
-              value:
-                requestId: 957b08cc-3e08-434a-936b-8bad3ad56895
-                error:
-                  code: ConflictError
-                  message: A conflict occured that prevented action.
-              summary: A conflict error response
     UnprocessableEntity:
       description: Unprocessable entity response
       content:
@@ -339,11 +355,60 @@ components:
         error:
           $ref: '#/components/schemas/Error'
     RegionFilter:
+      allOf:
+        - $ref: '#/components/schemas/DefaultFilter'
+        - type: object
+          required:
+            - district1
+            - district2
+          properties:
+            district1:
+              type: string
+              description: First district category
+            district2:
+              type: string
+              description: Second district category
+            district3:
+              type: string
+              description: Third district category
+            district4:
+              type: string
+              description: Fourth district category
+            builtWithIn:
+              type: integer
+              description: Maximum year of the building
+          example:
+            district1: 경기도
+            district2: 수원시
+            district3: 권선구
+            district4: 권선동
+            builtWithIn: 30
+    BuildingsFilter:
+      allOf:
+        - $ref: '#/components/schemas/DefaultFilter'
+        - type: object
+          required:
+            - district1
+            - district2
+          properties:
+            area:
+              type: number
+              format: float
+              description: Maximum area
+            buildings:
+              type: array
+              description: List of building ID
+              example: [ 0, 1 ]
+              items:
+                type: number
+                format: int64
+          example:
+            area: 59.9
+            buildings: [ 0, 1 ]
+    DefaultFilter:
       type: object
       required:
         - function
-        - district1
-        - district2
       properties:
         function:
           $ref: "#/components/schemas/RepresentativeType"
@@ -353,30 +418,10 @@ components:
         end:
           type: integer
           description: End date to check the price
-        district1:
-          type: string
-          description: First district category
-        district2:
-          type: string
-          description: Second district category
-        district3:
-          type: string
-          description: Third district category
-        district4:
-          type: string
-          description: Fourth district category
-        builtWithIn:
-          type: integer
-          description: Maximum year of the building
       example:
         function: AVERAGE
         start: 201501
         end: 201912
-        district1: 경기도
-        district2: 수원시
-        district3: 권선구
-        district4: 권선동
-        builtWithIn: 30
     RepresentativeType:
       type: string
       description: Function for representative value
