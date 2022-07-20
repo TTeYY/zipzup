@@ -3,6 +3,9 @@ rootProject.name = "zipzup"
 pluginManagement {
     val springBootVersion: String by settings
     val kotlinVersion: String by settings
+    val kotlinterVersion: String by settings
+    val koverVersion: String by settings
+    val detektVersion: String by settings
 
     plugins {
         id("java")
@@ -14,16 +17,13 @@ pluginManagement {
         id("io.spring.dependency-management") version "1.0.11.RELEASE"
         id("io.franzbecker.gradle-lombok") version "5.0.0"
 
-        id("pmd")
-        id("checkstyle")
-        id("com.github.spotbugs") version "4.7.1"
-        id("org.jmailen.kotlinter") version "3.7.0"
-        id("org.jetbrains.kotlinx.kover") version "0.4.4"
+        id("org.jmailen.kotlinter") version kotlinterVersion
+        id("org.jetbrains.kotlinx.kover") version koverVersion
+        id("io.gitlab.arturbosch.detekt") version detektVersion
 
         kotlin("jvm") version kotlinVersion
         kotlin("kapt") version kotlinVersion
         kotlin("plugin.spring") version kotlinVersion
-        kotlin("plugin.allopen") version kotlinVersion
     }
 
     repositories {
@@ -33,6 +33,14 @@ pluginManagement {
     }
 }
 
+include("zipzup-common")
+
+include("zipzup-domain")
+include("zipzup-port-web")
+include("zipzup-port-persistence")
+include("zipzup-application")
+include("zipzup-adapter-web")
+include("zipzup-adapter-persistence")
 include("zipzup-web")
 
 rootProject.children.forEach { project ->

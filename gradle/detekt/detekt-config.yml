@@ -1,0 +1,19 @@
+# https://github.com/detekt/detekt/blob/main/detekt-core/src/main/resources/default-detekt-config.yml
+build:
+  maxIssues: 0
+
+complexity:
+  LongParameterList:
+    excludes: [ '**/module/**' ]
+    constructorThreshold: 10
+
+style:
+  MagicNumber:
+    active: false
+  ReturnCount:
+    max: 3
+
+performance:
+  SpreadOperator:
+    excludes: [ '**/ZipZupApplication.kt' ]
+

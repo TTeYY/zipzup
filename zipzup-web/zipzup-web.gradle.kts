@@ -1,20 +1,11 @@
 import kotlinx.kover.api.CoverageEngine
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    id("io.franzbecker.gradle-lombok")
-
-    id("org.jmailen.kotlinter")
     id("org.jetbrains.kotlinx.kover")
-
-    kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.spring")
-    kotlin("plugin.allopen")
-
     application
 }
 
@@ -62,26 +53,10 @@ tasks.getByName<Jar>("jar") {
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "11"
-            javaParameters = true
-        }
-    }
-
-    compileTestKotlin {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "11"
-            javaParameters = true
-        }
-    }
-
     kover {
-        isEnabled = true
+        isDisabled = false
         coverageEngine.set(CoverageEngine.INTELLIJ)
-        generateReportOnCheck.set(true)
+        generateReportOnCheck = true
 
         koverHtmlReport {
             isEnabled = true
@@ -100,9 +75,4 @@ tasks {
             }
         }
     }
-
-    kotlinter {
-        disabledRules = arrayOf("no-wildcard-imports")
-    }
-
 }
